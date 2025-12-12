@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-zinc-950 font-sans text-zinc-100 antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
+
+  ::selection {
+    @apply bg-brand-500/30;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-7xl px-4;
+  }
+
+  .card-x {
+    @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur;
+  }
+
+  .btn-x {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition;
+  }
+
+  .btn-primary-x {
+    @apply btn-x relative isolate bg-brand-600 text-white hover:bg-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950;
+  }
+
+  .btn-primary-x::before {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    z-index: -2;
+    border-radius: 16px;
+    pointer-events: none;
+    background: radial-gradient(
+      60% 75% at 50% 60%,
+      color-mix(in srgb, theme('colors.brand.500') 55%, transparent),
+      transparent 70%
+    );
+    filter: blur(16px);
+    opacity: 0.55;
+    transition: opacity 200ms ease, filter 200ms ease;
+  }
+
+  /* Gamer RGB (subtil) - inel luminos pe hover/focus */
+  .btn-primary-x::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    z-index: -1;
+    border-radius: 16px;
+    padding: 3px;
+    pointer-events: none;
+    opacity: 0;
+    filter: blur(10px);
+    background: conic-gradient(
+      from 180deg,
+      theme('colors.red.500'),
+      theme('colors.yellow.400'),
+      theme('colors.green.500'),
+      theme('colors.cyan.400'),
+      theme('colors.blue.500'),
+      theme('colors.fuchsia.500'),
+      theme('colors.red.500')
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    transition: opacity 200ms ease;
+  }
+
+  .btn-primary-x:hover::before,
+  .btn-primary-x:focus-visible::before {
+    opacity: 0.8;
+    filter: blur(20px);
+  }
+
+  .btn-primary-x:hover::after,
+  .btn-primary-x:focus-visible::after {
+    opacity: 0.55;
+    animation: rgb-spin 1.6s linear infinite;
+  }
+
+  .btn-ghost-x {
+    @apply btn-x relative isolate border border-white/10 bg-white/0 text-zinc-100 hover:bg-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950;
+  }
+
+  .btn-ghost-x::before {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    z-index: -2;
+    border-radius: 16px;
+    pointer-events: none;
+    background: radial-gradient(
+      55% 70% at 50% 60%,
+      color-mix(in srgb, theme('colors.brand.400') 35%, transparent),
+      transparent 72%
+    );
+    filter: blur(16px);
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+
+  .btn-ghost-x:hover::before,
+  .btn-ghost-x:focus-visible::before {
+    opacity: 0.55;
+  }
+
+  @keyframes rgb-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-primary-x:hover::after,
+    .btn-primary-x:focus-visible::after {
+      animation: none;
+    }
+  }
+}
