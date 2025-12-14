@@ -3,8 +3,9 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vite.dev/config/
 export default defineConfig({
-  // GitHub Pages serves the site from /<repo>/, not from /.
-  // In GitHub Actions, GITHUB_REPOSITORY is like "owner/repo".
-  base: process.env.GITHUB_REPOSITORY ? `/${process.env.GITHUB_REPOSITORY.split('/')[1]}/` : '/',
+  // Relative base so the same build works on:
+  // - GitHub Pages project path: https://<user>.github.io/<repo>/
+  // - Custom domain root: https://example.com/
+  base: './',
   plugins: [vue()],
 })
