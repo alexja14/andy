@@ -5,6 +5,11 @@ import ThreeBackground from './components/ThreeBackground.vue'
 const CHANNEL_URL = 'https://www.youtube.com/@Adrian.Stefan7'
 const CHANNEL_URL_ALT = 'https://youtube.com/@adrian.stefan7?si=KtXgV3FHllQqZNYb'
 
+const INSTAGRAM_URL = 'https://www.instagram.com/adi_asz/'
+const DISCORD_URL = 'https://discord.com/invite/9Z6ttGv9ac'
+const TELEGRAM_URL = 'https://t.me/adisgaminghub'
+const TIKTOK_URL = 'https://www.tiktok.com/@adi_asz?lang=ro-RO'
+
 // Pentru “ultimele 3 videoclipuri” fără API key folosim RSS feed-ul YouTube.
 // Varianta cea mai stabilă este cu `channel_id=UC...`.
 const FEED_CANDIDATES = [
@@ -191,13 +196,13 @@ async function loadLatestVideos() {
 }
 
 const schedule = [
-  { day: 'Luni', time: '21:00 — 00:00', note: 'Încălzire + meciuri (CS)' },
-  { day: 'Marți', time: '21:00 — 00:00', note: 'Premier / ranked, focus pe progres' },
-  { day: 'Miercuri', time: '21:00 — 00:00', note: 'Meciuri cu comunitatea (când se strânge lumea)' },
-  { day: 'Joi', time: '21:00 — 00:00', note: 'CS + highlights + faze de povestit' },
-  { day: 'Vineri', time: '22:00 — ???', note: 'Seară lungă: chill, glume și clutch-uri' },
-  { day: 'Sâmbătă', time: 'Variabil', note: 'De obicei intru — depinde de program' },
-  { day: 'Duminică', time: 'Variabil', note: 'Dacă e vibe, e live' },
+  { day: 'Luni', time: '20:00 — 00:00', note: 'Încălzire + meciuri' },
+  { day: 'Marți', time: '20:00 — 00:00', note: 'Premier / FACEIT, focus pe progres' },
+  { day: 'Miercuri', time: '20:00 — 00:00', note: 'Cu comunitatea (când se strânge lumea)' },
+  { day: 'Joi', time: '20:00 — 00:00', note: 'Gameplay + faze de povestit' },
+  { day: 'Vineri', time: '20:00 — ???', note: 'Seară lungă: chill, glume și clutch-uri' },
+  { day: 'Sâmbătă', time: 'Variabil', note: '' },
+  { day: 'Duminică', time: 'Variabil', note: '' },
 ]
 
 onMounted(() => {
@@ -249,8 +254,22 @@ onMounted(() => {
     <header class="sticky top-0 z-20 border-b border-white/10 bg-zinc-950/70 backdrop-blur">
       <div class="container-x flex h-16 items-center justify-between">
         <a href="#acasa" class="flex items-center gap-2">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-brand-700/30 ring-1 ring-white/10">
-            <span class="text-sm font-black tracking-tight text-brand-200">X</span>
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-brand-700/30 ring-1 ring-white/10" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="h-5 w-5 text-brand-200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M6.2 6.3L17.8 17.9M17.8 6.3L6.2 17.9"
+                stroke="currentColor"
+                stroke-width="2.4"
+                stroke-linecap="round"
+              />
+              <path
+                d="M12 2.75l8 4.65v9.2l-8 4.65-8-4.65V7.4l8-4.65Z"
+                stroke="currentColor"
+                stroke-width="1.2"
+                stroke-linejoin="round"
+                opacity="0.65"
+              />
+            </svg>
           </span>
           <span class="font-brand text-base font-black tracking-wide">XADRY</span>
         </a>
@@ -259,6 +278,7 @@ onMounted(() => {
           <a class="hover:text-white" href="#despre">Despre</a>
           <a class="hover:text-white" href="#youtube">YouTube</a>
           <a class="hover:text-white" href="#program">Program</a>
+          <a class="hover:text-white" href="#linkuri">Linkuri</a>
         </nav>
 
         <div class="flex items-center gap-2">
@@ -274,32 +294,32 @@ onMounted(() => {
           <div class="md:col-span-5">
             <p class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-zinc-200">
               <span class="h-1.5 w-1.5 rounded-full bg-brand-400" />
-              Aproape zilnic live • CS2 • Premier • highlights
+              Entertainment + gaming • CS2 • Premier / FACEIT • vibe bun
             </p>
 
             <h1 class="mt-2 text-4xl font-black leading-snug tracking-tight md:text-5xl">
-              <span class="whitespace-nowrap">XADRY — CS 2</span>
-              <span class="mt-2 block whitespace-nowrap">clutch-uri</span>
+              <span class="whitespace-nowrap">XADRY — gaming</span>
+              <span class="mt-2 block whitespace-nowrap">și entertainment</span>
               <span class="mt-3 block whitespace-nowrap">
                 <span class="relative inline-block text-brand-300">
                   <span aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 text-brand-400 opacity-50 blur-sm animate-pulse">
-                    bere bună și rece
+                    bere rece + plăcere
                   </span>
-                  bere bună și rece
+                  bere rece + plăcere
                 </span>
               </span>
             </h1>
 
             <p class="mt-4 max-w-prose text-base leading-relaxed text-zinc-200">
-              Intră pentru CS2 (Premier/ranked), faze tari și un vibe curat.
-              Glume scurte, decizii rapide și o comunitate care ține cu tine — indiferent de scor.
+              Locul unde găsești entertainment și gaming.
+              CS2, momente de râs și caterincă non‑stop — plus gameplay puternic când se strânge vibe‑ul.
             </p>
 
             <div class="mt-5 card-x p-4 text-left">
               <p class="text-sm font-semibold">Un fel de „game friend”</p>
               <p class="mt-2 text-sm text-zinc-200">
-                Intră, salută, stai la un meci. Dacă îți iese clutch-ul, țipăm de bucurie.
-                Dacă nu îți iese… îl luăm ca pe lecție și dăm next.
+                Dacă vrei să mă vezi cum mă fac de râs și mă joc în același timp,
+                apasă pe butonul „Vezi canalul”.
               </p>
             </div>
 
@@ -311,11 +331,11 @@ onMounted(() => {
             <dl class="mt-8 grid grid-cols-3 gap-3">
               <div class="card-x p-4">
                 <dt class="text-xs text-zinc-300">Joc preferat</dt>
-                <dd class="mt-1 text-sm font-bold">Counter‑Strike</dd>
+                <dd class="mt-1 text-sm font-bold">Counter‑Strike 2</dd>
               </div>
               <div class="card-x p-4">
                 <dt class="text-xs text-zinc-300">Stil</dt>
-                <dd class="mt-1 text-sm font-bold">Chill + competitiv</dd>
+                <dd class="mt-1 text-sm font-bold">Caterincă + focus</dd>
               </div>
               <div class="card-x p-4">
                 <dt class="text-xs text-zinc-300">Vibe</dt>
@@ -326,8 +346,8 @@ onMounted(() => {
 
           <div class="card-x overflow-hidden md:col-span-7">
             <div class="border-b border-white/10 p-4">
-              <p class="text-sm font-semibold">Ultimul upload</p>
-              <p class="mt-1 text-xs text-zinc-300">Se actualizează automat • ultimele clipuri de pe canal</p>
+              <p class="text-sm font-semibold">Video de prezentare</p>
+              <p class="mt-1 text-xs text-zinc-300">Ultimul upload de pe canal (se actualizează automat)</p>
             </div>
 
                 <div class="aspect-video w-full bg-black/30">
@@ -367,7 +387,7 @@ onMounted(() => {
           <div class="md:col-span-1">
             <h2 class="text-2xl font-extrabold tracking-tight">Despre XADRY</h2>
             <p class="mt-2 text-sm text-zinc-200">
-              Un mix de CS, competiție și relaxare — dar mai ales un loc în care te simți bine.
+              Caterincă zi de zi, gameplay‑uri puternice și momente de neuitat.
               Pe YouTube mă găsești ca <span class="font-semibold text-zinc-100">@Adrian.Stefan7</span>.
             </p>
           </div>
@@ -377,17 +397,17 @@ onMounted(() => {
               <div>
                 <p class="text-sm font-semibold">Ce găsești pe stream</p>
                 <ul class="mt-2 space-y-2 text-sm text-zinc-200">
-                  <li class="flex gap-2"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-brand-400" /> Counter‑Strike (Premier / ranked)</li>
-                  <li class="flex gap-2"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-brand-400" /> Highlights, faze și "cum am gândit aici"</li>
-                  <li class="flex gap-2"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-brand-400" /> Comunitate, glume și energie bună</li>
+                  <li class="flex gap-2"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-brand-400" /> CS2: Premier + FACEIT</li>
+                  <li class="flex gap-2"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-brand-400" /> OME.TV (ocazional)</li>
+                  <li class="flex gap-2"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-brand-400" /> Entertainment și caterincă</li>
                 </ul>
               </div>
 
               <div>
                 <p class="text-sm font-semibold">Regula de aur</p>
                 <p class="mt-2 text-sm text-zinc-200">
-                  Ne respectăm: fără toxic, fără hate. Jucăm serios când trebuie și ne distrăm mereu.
-                  Berea e opțională, dar ideal „bună și rece”.
+                  Nu se spamează chatul. Ne tratăm ok în chat (până la un anumit nivel de caterincă).
+                  Fără hate, fără toxic. Și dacă e vibe: hai să bem o bere rece împreună.
                 </p>
               </div>
             </div>
@@ -399,7 +419,7 @@ onMounted(() => {
         <div class="flex items-end justify-between gap-4">
           <div>
             <h2 class="text-2xl font-extrabold tracking-tight">YouTube</h2>
-            <p class="mt-2 text-sm text-zinc-200">Ultimele 3 videoclipuri, plus highlights și rezumate de meci.</p>
+            <p class="mt-2 text-sm text-zinc-200">Ultimele clipuri de pe canal.</p>
           </div>
           <a class="btn-primary-x" :href="CHANNEL_URL" target="_blank" rel="noreferrer">Mergi la canal</a>
         </div>
@@ -440,16 +460,16 @@ onMounted(() => {
 
         <div class="mt-6 grid gap-4 md:grid-cols-3">
           <div class="card-x p-6">
-            <p class="text-sm font-semibold">Highlights</p>
-            <p class="mt-2 text-sm text-zinc-200">Faze tari, clutch-uri și momente de „cum a intrat asta?!”</p>
+            <p class="text-sm font-semibold">Entertainment</p>
+            <p class="mt-2 text-sm text-zinc-200">Faze de râs și caterincă non‑stop.</p>
           </div>
           <div class="card-x p-6">
-            <p class="text-sm font-semibold">Counter‑Strike</p>
-            <p class="mt-2 text-sm text-zinc-200">Gameplay, decizii rapide și progres pas cu pas.</p>
+            <p class="text-sm font-semibold">Gameplay puternic</p>
+            <p class="mt-2 text-sm text-zinc-200">CS2, decizii rapide și progres pas cu pas.</p>
           </div>
           <div class="card-x p-6">
             <p class="text-sm font-semibold">Comunitate</p>
-            <p class="mt-2 text-sm text-zinc-200">Intră la stream, hai la o vorbă și poate un game împreună.</p>
+            <p class="mt-2 text-sm text-zinc-200">Intră pe live, simte‑te bine și alătură‑te comunității.</p>
           </div>
         </div>
       </section>
@@ -459,7 +479,6 @@ onMounted(() => {
           <div class="flex flex-wrap items-end justify-between gap-4">
             <div>
               <h2 class="text-2xl font-extrabold tracking-tight">Program stream</h2>
-              <p class="mt-2 text-sm text-zinc-200">Aproape zilnic — orele pot varia. Cel mai sigur: verifică pe YouTube când intru live.</p>
             </div>
             <a class="btn-ghost-x" href="#acasa">Înapoi sus</a>
           </div>
@@ -470,8 +489,27 @@ onMounted(() => {
                 <p class="text-sm font-bold">{{ item.day }}</p>
                 <span class="rounded-full bg-brand-700/25 px-2 py-1 text-xs text-brand-100 ring-1 ring-white/10">{{ item.time }}</span>
               </div>
-              <p class="mt-2 text-sm text-zinc-200">{{ item.note }}</p>
+              <p v-if="item.note" class="mt-2 text-sm text-zinc-200">{{ item.note }}</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="linkuri" class="container-x py-12">
+        <div class="card-x p-6">
+          <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-extrabold tracking-tight">Linkuri</h2>
+              <p class="mt-2 text-sm text-zinc-200">Dă follow / intră pe server și hai la caterincă.</p>
+            </div>
+          </div>
+
+          <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <a class="btn-ghost-x w-full justify-center" :href="CHANNEL_URL" target="_blank" rel="noreferrer">YouTube</a>
+            <a class="btn-ghost-x w-full justify-center" :href="INSTAGRAM_URL" target="_blank" rel="noreferrer">Instagram</a>
+            <a class="btn-ghost-x w-full justify-center" :href="DISCORD_URL" target="_blank" rel="noreferrer">Discord (Go to Server)</a>
+            <a class="btn-ghost-x w-full justify-center" :href="TELEGRAM_URL" target="_blank" rel="noreferrer">Telegram</a>
+            <a class="btn-ghost-x w-full justify-center sm:col-span-2 lg:col-span-1" :href="TIKTOK_URL" target="_blank" rel="noreferrer">TikTok</a>
           </div>
         </div>
       </section>
