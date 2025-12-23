@@ -19,6 +19,7 @@ const FEED_CANDIDATES = [
   'https://www.youtube.com/feeds/videos.xml?user=Adrian.Stefan7',
 ]
 
+const heroVideo = ref(null)
 const latestVideos = ref([])
 const latestLoading = ref(true)
 const latestError = ref('')
@@ -157,9 +158,10 @@ function parseLatestFromXml(xmlText) {
   const doc = new DOMParser().parseFromString(xmlText, 'text/xml')
   const entries = Array.from(doc.getElementsByTagName('entry'))
   
-  // Filtriamo livestream: cercăm prima 10 entries și scoatem live-urile
-  const videos = []
-  for (const entry of entries.slice(0, 10)) {
+  // Parse all videos (unfiltered for latest section)
+  const allVideos = []
+  for (let i = 0; i < Math.min(10, entries.length); i++) {
+    const entry = entries[i]
     const videoIdNode = entry.getElementsByTagName('yt:videoId')?.[0]
     const titleNode = entry.getElementsByTagName('title')?.[0]
     const linkNode = entry.getElementsByTagName('link')?.[0]
@@ -168,27 +170,25 @@ function parseLatestFromXml(xmlText) {
     const title = titleNode?.textContent?.trim() || ''
     const href = linkNode?.getAttribute('href') || (videoId ? `https://www.youtube.com/watch?v=${videoId}` : '')
 
-    // Skip dacă titlul conține indicatori de livestream
     if (!videoId || !title) continue
-    const lowerTitle = title.toLowerCase()
-    if (lowerTitle.includes('🔴') || 
-        lowerTitle.includes('[live]') || 
-        lowerTitle.includes('(live)') ||
-        lowerTitle.includes('live stream')) {
-      continue
-    }
 
-    videos.push({
+    allVideos.push({
       videoId,
       title,
       href,
       embedUrl: toEmbedUrl(videoId),
+      isShort: href.includes('/shorts/'),
+      isLive: title.includes('🔴') || title.toLowerCase().includes('[live]') || title.toLowerCase().includes('(live)')
     })
-
-    if (videos.length >= 3) break
   }
 
-  return videos
+  // Find first normal video for hero (no live, no shorts)
+  const heroVideo = allVideos.find(v => !v.isLive && !v.isShort) || null
+
+  // Take first 3 for latest section (can be anything)
+  const latestThree = allVideos.slice(0, 3)
+
+  return { heroVideo, latestThree }
 }
 
 async function loadLatestVideos() {
@@ -198,9 +198,10 @@ async function loadLatestVideos() {
   for (const candidate of FEED_CANDIDATES) {
     try {
       const xml = await fetchFeedXml(candidate)
-      const parsed = parseLatestFromXml(xml).filter((v) => v.videoId)
-      if (parsed.length) {
-        latestVideos.value = parsed
+      const { heroVideo: hero, latestThree } = parseLatestFromXml(xml)
+      if (latestThree.length) {
+        heroVideo.value = hero
+        latestVideos.value = latestThree
         return
       }
     } catch {
@@ -208,6 +209,7 @@ async function loadLatestVideos() {
     }
   }
 
+  heroVideo.value = null
   latestVideos.value = []
   latestError.value = 'Nu am reușit să încarc automat ultimele videoclipuri. Deschide canalul și verifică feed-ul.'
 }
@@ -305,6 +307,73 @@ onMounted(() => {
       </div>
     </header>
 
+    <div class="social-bar border-b border-white/10 bg-gradient-to-r from-brand-950/40 via-zinc-950/60 to-brand-950/40 backdrop-blur-sm">
+      
+      <div class="container-x py-4">
+        <div class="flex flex-wrap items-center justify-center gap-4">
+          <a 
+            :href="CHANNEL_URL" 
+            target="_blank" 
+            rel="noreferrer"
+            class="group flex items-center gap-2 rounded-lg border border-white/10 bg-black/20 px-4 py-2 transition-all hover:border-brand-400/40 hover:bg-brand-950/30"
+          >
+            <svg class="h-5 w-5 text-brand-300 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+            <span class="text-sm font-semibold text-zinc-100">YouTube</span>
+          </a>
+          
+          <a 
+            :href="INSTAGRAM_URL" 
+            target="_blank" 
+            rel="noreferrer"
+            class="group flex items-center gap-2 rounded-lg border border-white/10 bg-black/20 px-4 py-2 transition-all hover:border-brand-400/40 hover:bg-brand-950/30"
+          >
+            <svg class="h-5 w-5 text-brand-300 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+            </svg>
+            <span class="text-sm font-semibold text-zinc-100">Instagram</span>
+          </a>
+          
+          <a 
+            :href="DISCORD_URL" 
+            target="_blank" 
+            rel="noreferrer"
+            class="group flex items-center gap-2 rounded-lg border border-white/10 bg-black/20 px-4 py-2 transition-all hover:border-brand-400/40 hover:bg-brand-950/30"
+          >
+            <svg class="h-5 w-5 text-brand-300 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+            </svg>
+            <span class="text-sm font-semibold text-zinc-100">Discord</span>
+          </a>
+          
+          <a 
+            :href="TELEGRAM_URL" 
+            target="_blank" 
+            rel="noreferrer"
+            class="group flex items-center gap-2 rounded-lg border border-white/10 bg-black/20 px-4 py-2 transition-all hover:border-brand-400/40 hover:bg-brand-950/30"
+          >
+            <svg class="h-5 w-5 text-brand-300 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+            </svg>
+            <span class="text-sm font-semibold text-zinc-100">Telegram</span>
+          </a>
+          
+          <a 
+            :href="TIKTOK_URL" 
+            target="_blank" 
+            rel="noreferrer"
+            class="group flex items-center gap-2 rounded-lg border border-white/10 bg-black/20 px-4 py-2 transition-all hover:border-brand-400/40 hover:bg-brand-950/30"
+          >
+            <svg class="h-5 w-5 text-brand-300 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+            </svg>
+            <span class="text-sm font-semibold text-zinc-100">TikTok</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
     <main>
       <section id="acasa" class="container-x py-12 md:py-16">
         <div class="grid items-center gap-10 md:grid-cols-12">
@@ -371,7 +440,7 @@ onMounted(() => {
                   <div v-if="latestLoading" class="grid h-full w-full place-items-center">
                     <p class="text-sm text-zinc-200">Încărcăm…</p>
                   </div>
-                  <div v-else-if="!latestVideos?.[0]?.embedUrl" class="grid h-full w-full place-items-center px-6 text-center">
+                  <div v-else-if="!heroVideo?.embedUrl" class="grid h-full w-full place-items-center px-6 text-center">
                     <div>
                       <p class="text-sm font-semibold text-zinc-100">Nu am putut încărca ultimul clip</p>
                       <p class="mt-2 text-sm text-zinc-200">Deschide canalul pe YouTube și vezi direct acolo.</p>
@@ -381,7 +450,7 @@ onMounted(() => {
                   <iframe
                     v-else
                     class="h-full w-full"
-                    :src="latestVideos[0].embedUrl"
+                    :src="heroVideo.embedUrl"
                     title="YouTube video player"
                     frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -420,12 +489,16 @@ onMounted(() => {
                 </ul>
               </div>
 
-              <div>
-                <p class="text-sm font-semibold">Regula de aur</p>
-                <p class="mt-2 text-sm text-zinc-200">
-                  Nu se spamează chatul. Ne tratăm ok în chat (până la un anumit nivel de caterincă).
-                  Fără hate, fără toxic. Și dacă e vibe: hai să bem o bere rece împreună.
-                </p>
+              <div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-yellow-950/30 via-amber-950/20 to-yellow-900/30 p-4 shadow-lg shadow-yellow-900/20">
+                <div class="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-yellow-400/10 blur-2xl"></div>
+                <div class="absolute -bottom-4 -left-4 h-20 w-20 rounded-full bg-amber-400/10 blur-xl"></div>
+                <div class="relative">
+                  <p class="text-sm font-bold text-yellow-100">Regula de aur</p>
+                  <p class="mt-3 text-sm leading-relaxed text-amber-100/90">
+                    Nu se spamează chatul. Ne tratăm ok în chat (până la un anumit nivel de caterincă).
+                    Fără hate, fără toxic. Și dacă e vibe: hai să bem o bere rece împreună.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -436,9 +509,43 @@ onMounted(() => {
         <div class="flex items-end justify-between gap-4">
           <div>
             <h2 class="text-2xl font-extrabold tracking-tight">YouTube</h2>
-            <p class="mt-2 text-sm text-zinc-200">Vezi ultimul clip în secțiunea de sus (hero).</p>
+            <p class="mt-2 text-sm text-zinc-200">Ultimele clipuri de pe canal.</p>
           </div>
           <a class="btn-primary-x" :href="CHANNEL_URL" target="_blank" rel="noreferrer">Mergi la canal</a>
+        </div>
+
+        <div class="mt-6">
+          <div v-if="latestLoading" class="card-x p-6">
+            <p class="text-sm text-zinc-200">Încărcăm ultimele 3 videoclipuri...</p>
+          </div>
+
+          <div v-else-if="latestError" class="card-x p-6">
+            <p class="text-sm text-zinc-200">{{ latestError }}</p>
+            <p class="mt-2 text-xs text-zinc-400">
+              Dacă nu apar clipurile, intră direct pe canal și verifică acolo.
+            </p>
+          </div>
+
+          <div v-else class="grid gap-4 md:grid-cols-3">
+            <div v-for="video in latestVideos" :key="video.videoId" class="card-x overflow-hidden">
+              <div class="aspect-video w-full bg-black/30">
+                <iframe
+                  class="h-full w-full"
+                  :src="video.embedUrl"
+                  :title="video.title || 'YouTube video'"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                />
+              </div>
+              <div class="p-4">
+                <p class="line-clamp-2 text-sm font-semibold">{{ video.title || 'Video' }}</p>
+                <a class="mt-3 inline-flex text-sm font-semibold text-brand-200 hover:text-brand-100" :href="video.href" target="_blank" rel="noreferrer">
+                  Deschide pe YouTube
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="mt-6 grid gap-4 md:grid-cols-3">
@@ -478,24 +585,7 @@ onMounted(() => {
         </div>
       </section>
 
-      <section id="linkuri" class="container-x py-12">
-        <div class="card-x p-6">
-          <div class="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <h2 class="text-2xl font-extrabold tracking-tight">Linkuri</h2>
-              <p class="mt-2 text-sm text-zinc-200">Dă follow / intră pe server și hai la caterincă.</p>
-            </div>
-          </div>
-
-          <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <a class="btn-ghost-x w-full justify-center" :href="CHANNEL_URL" target="_blank" rel="noreferrer">YouTube</a>
-            <a class="btn-ghost-x w-full justify-center" :href="INSTAGRAM_URL" target="_blank" rel="noreferrer">Instagram</a>
-            <a class="btn-ghost-x w-full justify-center" :href="DISCORD_URL" target="_blank" rel="noreferrer">Discord (Go to Server)</a>
-            <a class="btn-ghost-x w-full justify-center" :href="TELEGRAM_URL" target="_blank" rel="noreferrer">Telegram</a>
-            <a class="btn-ghost-x w-full justify-center sm:col-span-2 lg:col-span-1" :href="TIKTOK_URL" target="_blank" rel="noreferrer">TikTok</a>
-          </div>
-        </div>
-      </section>
+    
     </main>
 
     <footer class="border-t border-white/10 py-8">

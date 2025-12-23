@@ -1,0 +1,23 @@
+<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hexagon background -->
+  <path 
+    d="M16 2l12 7v14l-12 7-12-7V9l12-7z" 
+    fill="#581C4D"
+    opacity="0.9"
+  />
+  <path 
+    d="M16 2l12 7v14l-12 7-12-7V9l12-7z" 
+    stroke="#d63faf"
+    stroke-width="1.2"
+    stroke-linejoin="round"
+    opacity="0.6"
+  />
+  
+  <!-- X mark -->
+  <path
+    d="M11 11L21 21M21 11L11 21"
+    stroke="#f0a2df"
+    stroke-width="2.8"
+    stroke-linecap="round"
+  />
+</svg>
