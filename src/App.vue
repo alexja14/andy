@@ -156,7 +156,10 @@ async function fetchFeedXml(feedUrl) {
 function parseLatestFromXml(xmlText) {
   const doc = new DOMParser().parseFromString(xmlText, 'text/xml')
   const entries = Array.from(doc.getElementsByTagName('entry'))
-  return entries.slice(0, 3).map((entry) => {
+  
+  // Filtriamo livestream: cercăm prima 10 entries și scoatem live-urile
+  const videos = []
+  for (const entry of entries.slice(0, 10)) {
     const videoIdNode = entry.getElementsByTagName('yt:videoId')?.[0]
     const titleNode = entry.getElementsByTagName('title')?.[0]
     const linkNode = entry.getElementsByTagName('link')?.[0]
@@ -165,13 +168,27 @@ function parseLatestFromXml(xmlText) {
     const title = titleNode?.textContent?.trim() || ''
     const href = linkNode?.getAttribute('href') || (videoId ? `https://www.youtube.com/watch?v=${videoId}` : '')
 
-    return {
+    // Skip dacă titlul conține indicatori de livestream
+    if (!videoId || !title) continue
+    const lowerTitle = title.toLowerCase()
+    if (lowerTitle.includes('🔴') || 
+        lowerTitle.includes('[live]') || 
+        lowerTitle.includes('(live)') ||
+        lowerTitle.includes('live stream')) {
+      continue
+    }
+
+    videos.push({
       videoId,
       title,
       href,
       embedUrl: toEmbedUrl(videoId),
-    }
-  })
+    })
+
+    if (videos.length >= 3) break
+  }
+
+  return videos
 }
 
 async function loadLatestVideos() {
@@ -419,43 +436,9 @@ onMounted(() => {
         <div class="flex items-end justify-between gap-4">
           <div>
             <h2 class="text-2xl font-extrabold tracking-tight">YouTube</h2>
-            <p class="mt-2 text-sm text-zinc-200">Ultimele clipuri de pe canal.</p>
+            <p class="mt-2 text-sm text-zinc-200">Vezi ultimul clip în secțiunea de sus (hero).</p>
           </div>
           <a class="btn-primary-x" :href="CHANNEL_URL" target="_blank" rel="noreferrer">Mergi la canal</a>
-        </div>
-
-        <div class="mt-6">
-          <div v-if="latestLoading" class="card-x p-6">
-            <p class="text-sm text-zinc-200">Încărcăm ultimele 3 videoclipuri...</p>
-          </div>
-
-          <div v-else-if="latestError" class="card-x p-6">
-            <p class="text-sm text-zinc-200">{{ latestError }}</p>
-            <p class="mt-2 text-xs text-zinc-400">
-              Dacă nu apar clipurile, intră direct pe canal și verifică acolo.
-            </p>
-          </div>
-
-          <div v-else class="grid gap-4 md:grid-cols-3">
-            <div v-for="video in latestVideos" :key="video.videoId" class="card-x overflow-hidden">
-              <div class="aspect-video w-full bg-black/30">
-                <iframe
-                  class="h-full w-full"
-                  :src="video.embedUrl"
-                  :title="video.title || 'YouTube video'"
-                  frameborder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowfullscreen
-                />
-              </div>
-              <div class="p-4">
-                <p class="line-clamp-2 text-sm font-semibold">{{ video.title || 'Video' }}</p>
-                <a class="mt-3 inline-flex text-sm font-semibold text-brand-200 hover:text-brand-100" :href="video.href" target="_blank" rel="noreferrer">
-                  Deschide pe YouTube
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div class="mt-6 grid gap-4 md:grid-cols-3">
