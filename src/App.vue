@@ -273,22 +273,8 @@ onMounted(() => {
     <header class="sticky top-0 z-20 border-b border-white/10 bg-zinc-950/70 backdrop-blur">
       <div class="container-x flex h-16 items-center justify-between">
         <a href="#acasa" class="flex items-center gap-2">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-brand-700/30 ring-1 ring-white/10" aria-hidden="true">
-            <svg viewBox="0 0 24 24" class="h-5 w-5 text-brand-200" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M6.2 6.3L17.8 17.9M17.8 6.3L6.2 17.9"
-                stroke="currentColor"
-                stroke-width="2.4"
-                stroke-linecap="round"
-              />
-              <path
-                d="M12 2.75l8 4.65v9.2l-8 4.65-8-4.65V7.4l8-4.65Z"
-                stroke="currentColor"
-                stroke-width="1.2"
-                stroke-linejoin="round"
-                opacity="0.65"
-              />
-            </svg>
+          <span class="inline-flex h-8 w-8 items-center justify-center overflow-hidden rounded-xl ring-1 ring-white/10" aria-hidden="true">
+            <img src="/logo.jpg" alt="" class="h-full w-full object-cover" />
           </span>
           <span class="font-brand text-base font-black tracking-wide">XADRY</span>
         </a>
@@ -384,8 +370,7 @@ onMounted(() => {
             </p>
 
             <h1 class="mt-2 text-4xl font-black leading-snug tracking-tight md:text-5xl">
-              <span class="whitespace-nowrap">XADRY — gaming</span>
-              <span class="mt-2 block whitespace-nowrap">și entertainment</span>
+              <span class="block">XADRY - LOCUL UNDE GAESTE ENTERNAITMENT SI GAMING.</span>
               <span class="mt-3 block whitespace-nowrap">
                 <span class="relative inline-block text-brand-300">
                   <span aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 text-brand-400 opacity-50 blur-sm animate-pulse">
