@@ -370,7 +370,7 @@ onMounted(() => {
             </p>
 
             <h1 class="mt-2 text-4xl font-black leading-snug tracking-tight md:text-5xl">
-              <span class="block">XADRY - LOCUL UNDE GAESTE ENTERNAITMENT SI GAMING.</span>
+              <span class="block">XADRY - LOCUL UNDE SE GAESTE ENTERNAITMENT SI GAMING </span>
               <span class="mt-3 block whitespace-nowrap">
                 <span class="relative inline-block text-brand-300">
                   <span aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 text-brand-400 opacity-50 blur-sm animate-pulse">
