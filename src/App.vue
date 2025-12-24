@@ -382,7 +382,6 @@ onMounted(() => {
             </h1>
 
             <p class="mt-4 max-w-prose text-base leading-relaxed text-zinc-200">
-              Locul unde găsești entertainment și gaming.
               CS2, momente de râs și caterincă non‑stop — plus gameplay puternic când se strânge vibe‑ul.
             </p>
 
