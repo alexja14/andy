@@ -420,7 +420,6 @@ onMounted(() => {
           <div class="card-x overflow-hidden md:col-span-7">
             <div class="border-b border-white/10 p-4">
               <p class="text-sm font-semibold">Video de prezentare</p>
-              <p class="mt-1 text-xs text-zinc-300">Clip fix în hero</p>
             </div>
 
             <div class="aspect-video w-full bg-black/30">
