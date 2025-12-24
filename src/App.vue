@@ -434,9 +434,15 @@ onMounted(() => {
             </div>
 
             <div class="p-4">
-              <div class="grid gap-2 sm:grid-cols-2">
-                <a class="btn-ghost-x w-full" :href="CHANNEL_URL" target="_blank" rel="noreferrer">Deschide canalul pe YouTube</a>
-                
+              <div class="flex justify-center">
+                <a
+                  class="btn-ghost-x w-full max-w-sm sm:w-auto"
+                  :href="CHANNEL_URL"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Deschide canalul pe YouTube
+                </a>
               </div>
             </div>
           </div>
