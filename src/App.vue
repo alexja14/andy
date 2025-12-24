@@ -436,7 +436,7 @@ onMounted(() => {
             <div class="p-4">
               <div class="grid gap-2 sm:grid-cols-2">
                 <a class="btn-ghost-x w-full" :href="CHANNEL_URL" target="_blank" rel="noreferrer">Deschide canalul pe YouTube</a>
-                <a class="btn-ghost-x w-full" :href="CHANNEL_URL_ALT" target="_blank" rel="noreferrer">Link de rezervă (backup)</a>
+                
               </div>
             </div>
           </div>
