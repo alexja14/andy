@@ -19,7 +19,15 @@ const FEED_CANDIDATES = [
   'https://www.youtube.com/feeds/videos.xml?user=Adrian.Stefan7',
 ]
 
-const heroVideo = ref(null)
+const HERO_VIDEO_ID = 'NT6Dghvanqw'
+const HERO_VIDEO_URL = `https://www.youtube.com/watch?v=${HERO_VIDEO_ID}`
+
+const heroVideo = ref({
+  videoId: HERO_VIDEO_ID,
+  title: 'YouTube video',
+  href: HERO_VIDEO_URL,
+  embedUrl: toEmbedUrl(HERO_VIDEO_ID),
+})
 const latestVideos = ref([])
 const latestLoading = ref(true)
 const latestError = ref('')
@@ -182,13 +190,10 @@ function parseLatestFromXml(xmlText) {
     })
   }
 
-  // Find first normal video for hero (no live, no shorts)
-  const heroVideo = allVideos.find(v => !v.isLive && !v.isShort) || null
-
   // Take first 3 for latest section (can be anything)
   const latestThree = allVideos.slice(0, 3)
 
-  return { heroVideo, latestThree }
+  return { latestThree }
 }
 
 async function loadLatestVideos() {
@@ -198,9 +203,8 @@ async function loadLatestVideos() {
   for (const candidate of FEED_CANDIDATES) {
     try {
       const xml = await fetchFeedXml(candidate)
-      const { heroVideo: hero, latestThree } = parseLatestFromXml(xml)
+      const { latestThree } = parseLatestFromXml(xml)
       if (latestThree.length) {
-        heroVideo.value = hero
         latestVideos.value = latestThree
         return
       }
@@ -209,7 +213,6 @@ async function loadLatestVideos() {
     }
   }
 
-  heroVideo.value = null
   latestVideos.value = []
   latestError.value = 'Nu am reușit să încarc automat ultimele videoclipuri. Deschide canalul și verifică feed-ul.'
 }
@@ -417,30 +420,19 @@ onMounted(() => {
           <div class="card-x overflow-hidden md:col-span-7">
             <div class="border-b border-white/10 p-4">
               <p class="text-sm font-semibold">Video de prezentare</p>
-              <p class="mt-1 text-xs text-zinc-300">Ultimul upload de pe canal (se actualizează automat)</p>
+              <p class="mt-1 text-xs text-zinc-300">Clip fix în hero</p>
             </div>
 
-                <div class="aspect-video w-full bg-black/30">
-                  <div v-if="latestLoading" class="grid h-full w-full place-items-center">
-                    <p class="text-sm text-zinc-200">Încărcăm…</p>
-                  </div>
-                  <div v-else-if="!heroVideo?.embedUrl" class="grid h-full w-full place-items-center px-6 text-center">
-                    <div>
-                      <p class="text-sm font-semibold text-zinc-100">Nu am putut încărca ultimul clip</p>
-                      <p class="mt-2 text-sm text-zinc-200">Deschide canalul pe YouTube și vezi direct acolo.</p>
-                      <a class="btn-ghost-x mt-4 inline-flex" :href="CHANNEL_URL" target="_blank" rel="noreferrer">Deschide canalul</a>
-                    </div>
-                  </div>
-                  <iframe
-                    v-else
-                    class="h-full w-full"
-                    :src="heroVideo.embedUrl"
-                    title="YouTube video player"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen
-                  />
-                </div>
+            <div class="aspect-video w-full bg-black/30">
+              <iframe
+                class="h-full w-full"
+                :src="heroVideo.embedUrl"
+                :title="heroVideo.title || 'YouTube video player'"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+              />
+            </div>
 
             <div class="p-4">
               <div class="grid gap-2 sm:grid-cols-2">
